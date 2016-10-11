@@ -136,6 +136,11 @@ namespace Opm
         return *(std::min_element( steps_.begin(), steps_.end() ));
     }
 
+    int AdaptiveSimulatorTimer::numSubSteps() const
+    {
+        return steps_.size();
+    }
+
     /// \brief report start and end time as well as used steps so far
     void AdaptiveSimulatorTimer::
     report(std::ostream& os) const

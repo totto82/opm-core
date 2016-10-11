@@ -87,6 +87,8 @@ namespace Opm
         ///        was taken to arrive at this time.
         double stepLengthTaken () const;
 
+        int numSubSteps() const;
+
         /// \brief report start and end time as well as used steps so far
         void report(std::ostream& os) const;
 

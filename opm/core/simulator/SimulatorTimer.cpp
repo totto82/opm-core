@@ -81,6 +81,10 @@ namespace Opm
         return current_step_;
     }
 
+    int SimulatorTimer::numSubSteps() const
+    {
+        return 0;
+    }
     /// Set current step number.
     void SimulatorTimer::setCurrentStepNum(int step)
     {

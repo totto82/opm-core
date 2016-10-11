@@ -48,6 +48,8 @@ namespace Opm
         /// is timestep number zero.
         virtual int currentStepNum() const = 0;
 
+        virtual int numSubSteps() const = 0;
+
         /// Current report step number. This might differ from currentStepNum in case of sub stepping
         virtual int reportStepNum() const { return currentStepNum(); }
 
