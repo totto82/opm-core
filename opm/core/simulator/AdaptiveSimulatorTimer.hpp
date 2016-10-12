@@ -45,6 +45,7 @@ namespace Opm
         ///  \param maxTimeStep    maximum time step allowed
         AdaptiveSimulatorTimer( const SimulatorTimerInterface& timer,
                                 const double lastStepTaken,
+                                const double timeStepEstimate,
                                 const double maxTimeStep = std::numeric_limits<double>::max() );
 
         /// \brief advance time by currentStepLength
@@ -92,6 +93,9 @@ namespace Opm
         /// \brief report start and end time as well as used steps so far
         void report(std::ostream& os) const;
 
+        int numRestarts() const;
+        void increaseRestartCounter();
+
         /// \brief start date time of simulation
         boost::posix_time::ptime startDateTime() const;
 
@@ -104,6 +108,8 @@ namespace Opm
         const double total_time_;
         const int report_step_;
         const double max_time_step_;
+        const double lastStepTaken_;
+        int restarts_;
 
         double current_time_;
         double dt_;

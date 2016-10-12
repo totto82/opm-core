@@ -85,6 +85,12 @@ namespace Opm
     {
         return 0;
     }
+
+    int SimulatorTimer::numRestarts() const
+    {
+        return 0;
+    }
+
     /// Set current step number.
     void SimulatorTimer::setCurrentStepNum(int step)
     {
@@ -102,7 +108,10 @@ namespace Opm
 
     double SimulatorTimer::stepLengthTaken() const
     {
-        assert(current_step_ > 0);
+        if (current_step_ == 0)
+            return timesteps_[current_step_];
+
+        //assert(current_step_ > 0);
         return timesteps_[current_step_ - 1];
     }
 

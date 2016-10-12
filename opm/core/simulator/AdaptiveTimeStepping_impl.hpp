@@ -73,6 +73,7 @@ namespace Opm {
         , solver_verbose_( param.getDefault("solver.verbose", bool(true) ) && terminal_output )
         , timestep_verbose_( param.getDefault("timestep.verbose", bool(true) ) && terminal_output )
         , suggested_next_timestep_( -1.0 )
+        , last_time_step_( -1.0 )
         , full_timestep_initially_( param.getDefault("full_timestep_initially", bool(false) ) )
     {
         // valid are "pid" and "pid+iteration"
@@ -145,7 +146,7 @@ namespace Opm {
         // take change in well state into account
 
         // create adaptive step timer with previously used sub step size
-        AdaptiveSimulatorTimer substepTimer( simulatorTimer, suggested_next_timestep_, max_time_step_ );
+        AdaptiveSimulatorTimer substepTimer( simulatorTimer, last_time_step_, suggested_next_timestep_, max_time_step_ );
 
         // copy states in case solver has to be restarted (to be revised)
         State  last_state( state );
@@ -159,6 +160,7 @@ namespace Opm {
         {
             // get current delta t
             const double dt = substepTimer.currentStepLength() ;
+            last_time_step_ = dt;
             if( timestep_verbose_ )
             {
                 std::ostringstream ss;
@@ -268,9 +270,9 @@ namespace Opm {
                 well_state = last_well_state;
 
                 ++restarts;
+                substepTimer.increaseRestartCounter();
             }
         }
-
 
         // store estimated time step for next reportStep
         suggested_next_timestep_ = substepTimer.currentStepLength();

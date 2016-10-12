@@ -32,6 +32,7 @@ namespace Opm
     AdaptiveSimulatorTimer::
     AdaptiveSimulatorTimer( const SimulatorTimerInterface& timer,
                             const double lastStepTaken,
+                            const double timeStepEstimate,
                             const double maxTimeStep )
         : start_date_time_( timer.startDateTime() )
         , start_time_( timer.simulationTimeElapsed() )
@@ -42,12 +43,14 @@ namespace Opm
         , dt_( 0.0 )
         , current_step_( 0 )
         , steps_()
+        , lastStepTaken_( lastStepTaken )
+        , restarts_( 0 )
     {
         // reserve memory for sub steps
         steps_.reserve( 10 );
 
         // set appropriate value for dt_
-        provideTimeStepEstimate( lastStepTaken );
+        provideTimeStepEstimate( timeStepEstimate );
     }
 
     AdaptiveSimulatorTimer& AdaptiveSimulatorTimer::operator++ ()
@@ -63,6 +66,7 @@ namespace Opm
     provideTimeStepEstimate( const double dt_estimate )
     {
         double remaining = (total_time_ - current_time_);
+
         // apply max time step if it was set
         dt_ = std::min( dt_estimate, max_time_step_ );
 
@@ -101,9 +105,19 @@ namespace Opm
 
     double AdaptiveSimulatorTimer::stepLengthTaken() const
     {
-        assert( ! steps_.empty() );
+        if (steps_.empty())
+            return lastStepTaken_;
+
         return steps_.back();
     }
+
+    int AdaptiveSimulatorTimer::numRestarts() const {
+        return restarts_;
+    }
+    void AdaptiveSimulatorTimer::increaseRestartCounter() {
+        restarts_++;
+    }
+
 
 
 
