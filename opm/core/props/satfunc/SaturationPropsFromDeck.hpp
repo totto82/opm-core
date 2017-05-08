@@ -29,6 +29,8 @@
 #include <opm/parser/eclipse/Deck/Deck.hpp>
 #include <opm/parser/eclipse/EclipseState/EclipseState.hpp>
 
+#include <opm/material/fluidmatrixinteractions/EclMaterialLawManager.hpp>
+
 #include <vector>
 
 struct UnstructuredGrid;
@@ -39,6 +41,8 @@ namespace Opm
     // Forward declaring the EclMaterialLawManager template.
     template <class ScalarT, int wettingPhaseIdxV, int nonWettingasPhaseIdxV, int gasPhaseIdxV>
     class ThreePhaseMaterialTraits;
+    template <class ScalarT, int wettingPhaseIdxV, int nonWettingasPhaseIdxV>
+    class TwoPhaseMaterialTraits;
     template <class Traits>
     class EclMaterialLawManager;
 
@@ -47,11 +51,15 @@ namespace Opm
     class SaturationPropsFromDeck : public SaturationPropsInterface
     {
     public:
-        typedef Opm::ThreePhaseMaterialTraits<double,
-                                              /*wettingPhaseIdx=*/BlackoilPhases::Aqua,
-                                              /*nonWettingPhaseIdx=*/BlackoilPhases::Liquid,
-                                              /*gasPhaseIdx=*/BlackoilPhases::Vapour> MaterialTraits;
+        //typedef Opm::ThreePhaseMaterialTraits<double,
+        //                                      /*wettingPhaseIdx=*/BlackoilPhases::Aqua,
+        //                                      /*nonWettingPhaseIdx=*/BlackoilPhases::Liquid,
+        //                                      /*gasPhaseIdx=*/BlackoilPhases::Vapour> MaterialTraits;
+        typedef Opm::TwoPhaseMaterialTraits<double,
+                                            /*wettingPhaseIdx=*/BlackoilPhases::Aqua,
+                                            /*nonWettingPhaseIdx=*/BlackoilPhases::Liquid> MaterialTraits;
         typedef Opm::EclMaterialLawManager<MaterialTraits> MaterialLawManager;
+        typedef typename MaterialLawManager :: MaterialLaw  MaterialLaw;
 
         /// Default constructor.
         SaturationPropsFromDeck();
@@ -114,9 +122,9 @@ namespace Opm
                       double* smin,
                       double* smax) const;
 
-        /// Update saturation state for the hysteresis tracking 
-        /// \param[in]  n      Number of data points. 
-        /// \param[in]  s      Array of nP saturation values.             
+        /// Update saturation state for the hysteresis tracking
+        /// \param[in]  n      Number of data points.
+        /// \param[in]  s      Array of nP saturation values.
         void updateSatHyst(const int n,
                            const int* cells,
                            const double* s);
@@ -158,11 +166,11 @@ namespace Opm
                                    double* krnswdc) const;
 
         /// Update capillary pressure scaling according to pressure diff. and initial water saturation.
-        /// \param[in]     cell  Cell index. 
+        /// \param[in]     cell  Cell index.
         /// \param[in]     pcow  P_oil - P_water.
-        /// \param[in/out] swat  Water saturation. / Possibly modified Water saturation.        
-        void swatInitScaling(const int cell, 
-                             const double pcow, 
+        /// \param[in/out] swat  Water saturation. / Possibly modified Water saturation.
+        void swatInitScaling(const int cell,
+                             const double pcow,
                              double & swat);
 
         /// Returns a reference to the MaterialLawManager
@@ -173,8 +181,6 @@ namespace Opm
         std::shared_ptr<MaterialLawManager> materialLawManager_;
         PhaseUsage phaseUsage_;
     };
-
-
 
 } // namespace Opm
 
