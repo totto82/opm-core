@@ -960,8 +960,8 @@ namespace Opm
                 int c_deck = (global_cell == NULL) ? c : global_cell[c];
                 state.gasoilratio()[c] = rs_deck[c_deck];
             }
-            initBlackoilSurfvolUsingRSorRV(number_of_cells, props, state);
-            computeSaturation(props,state);
+            //initBlackoilSurfvolUsingRSorRV(number_of_cells, props, state);
+            //computeSaturation(props,state);
         } else if (grid_props.hasDeckDoubleGridProperty("RV")) {
             const auto& rv_deck = grid_props.getDoubleGridProperty("RV").getData();
             const int num_cells = number_of_cells;
@@ -969,14 +969,14 @@ namespace Opm
                 int c_deck = (global_cell == NULL) ? c : global_cell[c];
                 state.rv()[c] = rv_deck[c_deck];
             }
-            initBlackoilSurfvolUsingRSorRV(number_of_cells, props, state);
-            computeSaturation(props,state);
+            //initBlackoilSurfvolUsingRSorRV(number_of_cells, props, state);
+            //computeSaturation(props,state);
         }
         else {
             state.gasoilratio() = std::vector<double>(number_of_cells, 0.0);
             state.rv() = std::vector<double>(number_of_cells, 0.0);
-            initBlackoilSurfvolUsingRSorRV(number_of_cells, props, state);
-            computeSaturation(props,state);
+            //initBlackoilSurfvolUsingRSorRV(number_of_cells, props, state);
+            //computeSaturation(props,state);
         }
     }
 
